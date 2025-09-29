@@ -6,7 +6,6 @@ from typing import Optional
 import math
 from fastapi.middleware.cors import CORSMiddleware
 
-# --- FastAPI app (only once!) ---
 app = FastAPI()
 
 # --- CORS middleware ---
@@ -28,7 +27,6 @@ engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# --- SQLAlchemy model (match your real table: no id column) ---
 class Temperature(Base):
     __tablename__ = "temperature"
     reading_time = Column(DateTime, primary_key=True, nullable=False)
@@ -43,7 +41,7 @@ def get_db():
         db.close()
 
 
-# ✅ GET latest temperature
+# GET latest temperature
 @app.get("/api/temperature/latest")
 def get_latest_temperature(db: Session = Depends(get_db)):
     latest = (
@@ -62,7 +60,7 @@ def get_latest_temperature(db: Session = Depends(get_db)):
     }
 
 
-# ✅ GET temperature list with filters + pagination
+# GET temperature list with filters + pagination
 @app.get("/api/temperature")
 def get_temperatures(
     start_time: Optional[str] = Query(None),
